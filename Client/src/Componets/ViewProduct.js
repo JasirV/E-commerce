@@ -17,7 +17,6 @@ useEffect(()=>{
     try {
       const response=await Axios.get(`users/products/${Id}`);
       setProduct(response.data.product);
-      console.log(response.data.product);
     } catch (error) {
       console.log("Error fetching the Product",error);
       toast.error("error")
@@ -30,7 +29,7 @@ useEffect(()=>{
 const addToCart=async ()=>{
   try {
     const response =await Axios.post(`users/${userId}/cart`,{
-      productId:Id.at,
+      productId:Id,
     });
     console.log(response);
     if(response){
