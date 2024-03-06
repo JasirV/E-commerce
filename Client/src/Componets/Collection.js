@@ -1,21 +1,74 @@
-import React, { useContext } from "react";
-import { AllContext } from "../App";
+import React, { useContext, useEffect, useState } from "react";
+import { AllContext, Axios } from "../App";
 import { Button, Card } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 import Navigation from "./Navigation";
 import { Footer } from "./Footer";
+import axios from "axios";
+import { toast } from "react-toastify";
+const userId=localStorage.getItem('userId')
+
 const Collection = () => {
-  const { product, search } = useContext(AllContext);
-  const Navigate = useNavigate();
-  const Search = product.filter((item) => {
-    if (search === "") {
-      return item;
-    } else if (item.ProductName.toLowerCase().includes(search.toLowerCase())) {
-      return item;
-    } else {
-      return "";
+
+  const Navigate=useNavigate()
+  const {search,setSearch}=useContext(AllContext);
+  const [products,setProduct]=useState([]);
+  useEffect(() => {
+    const allProducts = async () => {
+      try {
+        const response = await axios.get(
+          'http://localhost:3001/users/products'
+        );
+        setProduct(response.data.product);
+        console.log(response.data.product);
+      } catch (error) {
+        console.log(error);
+        toast.error(error.message || "Failed to fetch Products");
+      }
+    };
+  
+    allProducts();
+  }, []);
+  
+  // const Searches=products.filter((srch)=>{
+  //   if(search===""){
+  //     return srch
+  //   }else if(srch.titile.toLowerCase().includes(search.toLowerCase())){
+  //     return srch
+  //   }else{
+  //     return "";
+  //   }
+  // });
+
+
+  const addToWishList =async (id)=>{
+    try {
+      const response =await Axios.post(`users/${userId}/wishlist`,{
+        productId:id,
+      })
+      console.log(response);
+    if(response.status===200){
+      return toast.success("Product added to the wishlist!")
     }
-  });
+    } catch (error) {
+      console.error("Error adding Product to the whislist",error)
+      toast.error(error.response.data.message)
+    }
+  }
+
+
+  // const { product, search } = useContext(AllContext);
+  // const Navigate = useNavigate();
+  // const Search = product.filter((item) => {
+  //   if (search === "") {
+  //     return item;
+  //   } else if (item.ProductName.toLowerCase().includes(search.toLowerCase())) {
+  //     return item;
+  //   } else {
+  //     return "";
+  //   }
+  // });
+
 
   return (
     <div>
@@ -34,7 +87,7 @@ const Collection = () => {
           </h5>
         </div>
         <div className="d-flex flex-wrap m-3 justify-content-center">
-          {Search.map((item, index) => (
+          {products.map((item, index) => (
             <Card
               onClick={() => {
                 Navigate(`/View/${item.Id}`);
@@ -60,7 +113,7 @@ const Collection = () => {
                 <Card.Img
                   className="img-fluid m-2"
                   variant="top"
-                  src={item.Image}
+                  src={item.image}
                   alt={item.ProductName}
                   style={{
                     height: "16rem",
@@ -71,7 +124,7 @@ const Collection = () => {
               </div>
 
               <Card.Body>
-                <h6 className="mt-1">₹{item.Price}</h6>
+                <h6 className="mt-1">₹{item.price}</h6>
                 {item.OldPrice && (
                   <del
                     className="text-secondary"
@@ -85,7 +138,7 @@ const Collection = () => {
                     fontWeight: "bold",
                     marginTop: "0.5rem",
                   }}>
-                  {item.ProductName}
+                  {item.title}
                 </Card.Title>
                 <Button variant="primary" style={{ marginTop: "1rem" }}>
                   View Details
@@ -95,7 +148,6 @@ const Collection = () => {
           ))}
         </div>
       </div>
-      <Footer />
     </div>
   );
 };

@@ -1,13 +1,15 @@
-import React, {useRef, useState } from "react";
+import React, {useContext, useRef, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import axios from "axios";
+import { AllContext } from "../App";
 
 const Loging = () => {
   const Navigation = useNavigate();
   const [error, setError] = useState("");
   const usernameRef = useRef("");
   const PasswordRef = useRef("");
+  const {setLoging}=useContext(AllContext)  
   const submit = async (e) => {
     e.preventDefault();
     const username = usernameRef.current.value;
@@ -34,6 +36,7 @@ const Loging = () => {
           localStorage.removeItem('userId');
         },3600000)
         console.log(response.data.token);
+        setLoging(true)
         toast.success("Thank You Loging");
         Navigation("/");
       }

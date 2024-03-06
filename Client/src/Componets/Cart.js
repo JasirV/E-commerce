@@ -1,142 +1,203 @@
 import React, { useContext, useEffect, useState } from "react";
-import { AllContext } from "../App";
-import { Button, Card } from "react-bootstrap";
+import { AllContext, Axios } from "../App";
+import { Button, Card, ToastBody } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import Navigation from "./Navigation";
 import { MDBIcon } from "mdb-react-ui-kit";
+const userId=localStorage.getItem('userId')
 
 const Cart = () => {
+  const [cart,setCart]=useState([])
+  const [price,setPrice]=useState(0)
   const Navigate = useNavigate();
-  const {
-    sale,
-    product,
-    totalPrice,
-    setTotalPrice,
-    setSale,
-    itemsincart,
-    setItemsincart,
-    login,
-    loginUser,
-    setOffer,
-    offer,
-  } = useContext(AllContext);
-  const [userCart, setUserCart] = useState([]);
-  useEffect(() => {
-    setUserCart(loginUser.order);
-  }, []);
-
-  useEffect(() => {
-    if (!login) {
-      setUserCart([]);
-    } else {
+  console.log(userId);
+  const fetchCat=async()=>{
+    try {
+      const response = await Axios.get(`users/${userId}/cart`);
+      console.log(response.data.data);
+      setCart(response.data.data)
+    } catch (error) {
+      console.log("Error fecthing the product",error);
+      toast.error('Error');
     }
-  }, [login, setUserCart]);
-  const handleChange = (x) => {
-    const ProductPrice = product.find((item) => item.Id === x);
-    if (!ProductPrice) {
-      return;
+  }
+  useEffect(()=>{
+    fetchCat();
+  },[])
+
+
+  const RemoveCartItem=async(id)=>{
+    try {
+      const productId=id;
+      const response=await Axios.delete(`users/${userId}/cart`,{data:{productId:productId}})
+      fetchCat();
+      console.log(response);
+    } catch (error) {
+      console.log('Error fetching The Product',error);
+      toast.error("error")
     }
-
-    const updateCart = userCart.map((item) => {
-      if (item.Id === x && item.qty < item.Stock) {
-        return {
-          ...item,
-          qty: item.qty + 1,
-          Price: parseFloat(item.Price) + parseFloat(ProductPrice.Price),
-          OldPrice:
-            parseFloat(item.OldPrice) + parseFloat(ProductPrice.OldPrice),
-        };
-      }
-      return item;
-    });
-    setUserCart(updateCart);
   };
 
-  const handleChangede = (x) => {
-    const updateCart = userCart.map((item) => {
-      if (item.Id === x && item.qty > 1) {
-        const ProductPrice = product.find(
-          (productItem) => productItem.Id === x
-        );
-        if (!ProductPrice) {
-          return item;
-        }
-        return {
-          ...item,
-          qty: item.qty - 1,
-          Price: parseFloat(item.Price) - parseFloat(ProductPrice.Price),
-          OldPrice:
-            parseFloat(item.OldPrice) - parseFloat(ProductPrice.OldPrice),
-        };
-      }
-      return item;
-    });
-
-    setUserCart(updateCart);
-  };
-
-  const clear = () => {
-    console.log("button Clicked");
-    loginUser.order = [];
-    setUserCart([]);
-  };
-
-  const remove = (x) => {
-    const updatedCart = userCart.filter((item) => item.Id !== x);
-    setUserCart(updatedCart);
-    loginUser.order = updatedCart;
-    toast.error("Your Product Is Removed");
-  };
-
-  useEffect(() => {
-    if (userCart && userCart.length > 0) {
-      const totalprice = userCart.reduce(
-        (pre, curr) => pre + parseFloat(curr.Price),
-        0
-      );
-      setTotalPrice(totalprice);
-
-      const offer = userCart.reduce(
-        (pre, curr) => pre + parseFloat(curr.OldPrice),
-        0
-      );
-      setOffer(offer);
-
-      const updateincriment = userCart.reduce((pre, curr) => pre + curr.qty, 0);
-      setItemsincart(updateincriment);
-    } else {
-      setTotalPrice(0);
-      setOffer(0);
-      setItemsincart(0);
+  const buyProduct =async()=>{
+    try {
+      const response =await Axios.post(`users/${userId}/payment`);
+      console.log(response.data.url);
+      window.location.href=response.data.url
+    } catch (error) {
+      toast.error(error)
+      console.log(error);
     }
-  }, [userCart, setTotalPrice, setItemsincart, setOffer]);
+  }
+const deceaseQuantity=(id)=>{
+  const updateCart=cart.map((item)=>{
+    if(item._id===id&&item.qty>1){
+      return {...item,qty:item.qty-1};
+    }
+    return item
+  });
+  setCart(updateCart);
+};
 
-  const OderNow = () => {
-    setSale([...userCart]);
+const totalCartItem=(item)=>{
+  return item.price*item.qty;
+};
 
-    console.log(sale);
-    setUserCart([]);
-  };
-  const Buyproduct = (x) => {
-    const buyitem = userCart.find((item) => item.Id === x);
-    const remv = userCart.filter((item) => item.Id !== x);
-    loginUser.order = remv;
-    setUserCart(remv);
-    sale.userCart.push({buyitem});
-    toast.info("Your Product is Shipping");
-  };
+const clearCart=()=>{
+  setCart([])
+};
+
+const totalCartPrice=cart.reduce((total,item)=>total+item.price*item.qty,0)
+
+
+
+  // const {
+  //   sale,
+  //   product,
+  //   totalPrice,
+  //   setTotalPrice,
+  //   setSale,
+  //   itemsincart,
+  //   setItemsincart,
+  //   login,
+  //   loginUser,
+  //   setOffer,
+  //   offer,
+  // } = useContext(AllContext);
+  // const [userCart, setUserCart] = useState([]);
+  // useEffect(() => {
+  //   setUserCart(loginUser.order);
+  // }, []);
+
+  // useEffect(() => {
+  //   if (!login) {
+  //     setUserCart([]);
+  //   } else {
+  //   }
+  // }, [login, setUserCart]);
+  // const handleChange = (x) => {
+  //   const ProductPrice = product.find((item) => item.Id === x);
+  //   if (!ProductPrice) {
+  //     return;
+  //   }
+
+  //   const updateCart = userCart.map((item) => {
+  //     if (item.Id === x && item.qty < item.Stock) {
+  //       return {
+  //         ...item,
+  //         qty: item.qty + 1,
+  //         Price: parseFloat(item.Price) + parseFloat(ProductPrice.Price),
+  //         OldPrice:
+  //           parseFloat(item.OldPrice) + parseFloat(ProductPrice.OldPrice),
+  //       };
+  //     }
+  //     return item;
+  //   });
+  //   setUserCart(updateCart);
+  // };
+
+  // const handleChangede = (x) => {
+  //   const updateCart = userCart.map((item) => {
+  //     if (item.Id === x && item.qty > 1) {
+  //       const ProductPrice = product.find(
+  //         (productItem) => productItem.Id === x
+  //       );
+  //       if (!ProductPrice) {
+  //         return item;
+  //       }
+  //       return {
+  //         ...item,
+  //         qty: item.qty - 1,
+  //         Price: parseFloat(item.Price) - parseFloat(ProductPrice.Price),
+  //         OldPrice:
+  //           parseFloat(item.OldPrice) - parseFloat(ProductPrice.OldPrice),
+  //       };
+  //     }
+  //     return item;
+  //   });
+
+  //   setUserCart(updateCart);
+  // };
+
+  // const clear = () => {
+  //   console.log("button Clicked");
+  //   loginUser.order = [];
+  //   setUserCart([]);
+  // };
+
+  // const remove = (x) => {
+  //   const updatedCart = userCart.filter((item) => item.Id !== x);
+  //   setUserCart(updatedCart);
+  //   loginUser.order = updatedCart;
+  //   toast.error("Your Product Is Removed");
+  // };
+
+  // useEffect(() => {
+  //   if (userCart && userCart.length > 0) {
+  //     const totalprice = userCart.reduce(
+  //       (pre, curr) => pre + parseFloat(curr.Price),
+  //       0
+  //     );
+  //     setTotalPrice(totalprice);
+
+  //     const offer = userCart.reduce(
+  //       (pre, curr) => pre + parseFloat(curr.OldPrice),
+  //       0
+  //     );
+  //     setOffer(offer);
+
+  //     const updateincriment = userCart.reduce((pre, curr) => pre + curr.qty, 0);
+  //     setItemsincart(updateincriment);
+  //   } else {
+  //     setTotalPrice(0);
+  //     setOffer(0);
+  //     setItemsincart(0);
+  //   }
+  // }, [userCart, setTotalPrice, setItemsincart, setOffer]);
+
+  // const OderNow = () => {
+  //   setSale([...userCart]);
+
+  //   console.log(sale);
+  //   setUserCart([]);
+  // };
+  // const Buyproduct = (x) => {
+  //   const buyitem = userCart.find((item) => item.Id === x);
+  //   const remv = userCart.filter((item) => item.Id !== x);
+  //   loginUser.order = remv;
+  //   setUserCart(remv);
+  //   sale.userCart.push({buyitem});
+  //   toast.info("Your Product is Shipping");
+  // };
 
   return (
     <>
       <Navigation />
       <div className="d-flex flex-wrap m-5 ">
-        {userCart &&
-          userCart.length > 0 &&
-          userCart.map((item) => (
+          {cart.map((item) => (
             <Card
               className="m-2 mx-5"
-              key={item.Id}
+              key={item._id}
               style={{ width: "16rem", overflow: "hidden", margin: "auto" }}>
               <Card.Img
                 className="img-fluid"
@@ -157,32 +218,27 @@ const Cart = () => {
                 </h5>
                 <button
                   className="rounded-circle"
-                  style={{ width: "3rem", height: "3rem", border: ".2px" }}
-                  onClick={() => {
-                    handleChange(item.Id);
-                  }}>
+                  style={{ width: "3rem", height: "3rem", border: ".2px" }}>
                   +
                 </button>
                 <button
                   className="rounded-circle m-2"
                   style={{ width: "3rem", height: "3rem", border: ".2px" }}
                   onClick={() => {
-                    handleChangede(item.Id);
+                    deceaseQuantity(item._id);
                   }}>
                   -
                 </button>
                 <br />
                 <Button
                   className=" m-2"
-                  onClick={() => {
-                    Buyproduct(item.Id);
-                  }}>
+                  onClick= {buyProduct}>
                   Buy
                 </Button>
                 <button
                   className=" m-2 btn btn-light"
                   onClick={() => {
-                    remove(item.Id);
+                    RemoveCartItem(item.Id);
                   }}>
                   Remove
                 </button>
@@ -190,7 +246,6 @@ const Cart = () => {
             </Card>
           ))}
       </div>
-      {login ? (
         <div style={{ marginLeft: "20%" }}>
           <Card
             className="m-2 w-75 p-2 mr-5 shadow"
@@ -198,29 +253,27 @@ const Cart = () => {
             <Card.Title>{}</Card.Title>
             <Card.Body>
               <h3>
-                Total: <span className="text-success">₹{totalPrice}</span>
+                Total: <span className="text-success">₹{totalCartItem}</span>
               </h3>
-              <del className="text-secondary">₹{offer}</del>
-              <h5>{itemsincart} Items</h5>
+              {/* <del className="text-secondary">₹{offer}</del>
+              <h5>{itemsincart} Items</h5> */}
               <MDBIcon
                 fas
                 icon="truck"
                 className="mt-2"
                 onClick={() => {
                   Navigate("/Payment");
-                  OderNow();
+                  // OderNow();
                 }}
               />
               <br />
-              <Button onClick={() => clear()} className="mt-2 btn btn-light">
+              <Button onClick={clearCart} className="mt-2 btn btn-light">
                 Clear Cart
               </Button>
             </Card.Body>
           </Card>
         </div>
-      ) : (
         <h1>NOProduct</h1>
-      )}
     </>
   );
 };
