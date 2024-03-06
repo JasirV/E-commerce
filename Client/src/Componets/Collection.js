@@ -2,14 +2,10 @@ import React, { useContext, useEffect, useState } from "react";
 import { AllContext, Axios } from "../App";
 import { Button, Card } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
-import Navigation from "./Navigation";
-import { Footer } from "./Footer";
 import axios from "axios";
 import { toast } from "react-toastify";
 const userId=localStorage.getItem('userId')
-
 const Collection = () => {
-
   const Navigate=useNavigate()
   const {search,setSearch}=useContext(AllContext);
   const [products,setProduct]=useState([]);
@@ -90,7 +86,7 @@ const Collection = () => {
           {products.map((item, index) => (
             <Card
               onClick={() => {
-                Navigate(`/View/${item.Id}`);
+                Navigate(`/View/${item._id}`);
               }}
               key={item.id || index}
               className="m-2"

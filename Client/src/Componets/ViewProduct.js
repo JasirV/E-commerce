@@ -1,67 +1,93 @@
-import React, { useContext, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
-import { AllContext } from "../App";
+import React, { useEffect, useState } from "react";
+import {  useParams } from "react-router-dom";
 import { Button, Card } from "react-bootstrap";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import Navigation from "./Navigation";
+import { Axios,  } from "../App";
 
 const ViewProduct = () => {
-  const navigate = useNavigate();
-  const [btn, setBtn] = useState(true);
-  const { product, login, userData, loginUser } = useContext(AllContext);
+  const [product,setProduct] = useState(null);
   const { Id } = useParams();
-  const ViewProduct = product.filter((item) => item.Id === parseInt(Id));
-  console.log(loginUser);
-  const addItem = () => {
-    if (login) {
-      const [newpro] = ViewProduct;
-      const filterCart = loginUser.order.filter(
-        (item) => item.Id === newpro.Id
-      );
-      if (filterCart.length > 0) {
-        toast.error("product already set to cart");
-        setBtn(false);
-      } else {
-        loginUser.order.push({ ...newpro, qty: 1 });
-        console.log(userData);
-        toast.success("Successful add to cart");
-      }
-    } else {
-      toast.error("Please Loging");
-      navigate("/login");
+  const userId=localStorage.getItem("userId")
+  
+
+useEffect(()=>{
+  const viewProduct=async ()=>{
+    try {
+      const response=await Axios.get(`users/products/${Id}`);
+      setProduct(response.data.product);
+      console.log(response.data.product);
+    } catch (error) {
+      console.log("Error fetching the Product",error);
+      toast.error("error")
+      
     }
   };
-  console.log(userData);
+  viewProduct();
+},[Id]);
+
+const addToCart=async ()=>{
+  try {
+    const response =await Axios.post(`users/${userId}/cart`,{
+      productId:Id.at,
+    });
+    console.log(response);
+    if(response){
+      await Axios.get(`users/${userId}/cart`);
+      return toast.success("Add To Cart")
+    }
+  } catch (error) {
+    console.error("Error adding Prodct TO The Cart",error)
+    toast.error(error.response.data.message);
+  }
+};
+
+
+  // const ViewProduct = product.filter((item) => item.Id === parseInt(Id));
+  // console.log(loginUser);
+  // const addItem = () => {
+  //   if (login) {
+  //     const [newpro] = ViewProduct;
+  //     const filterCart = loginUser.order.filter(
+  //       (item) => item.Id === newpro.Id
+  //     );
+  //     if (filterCart.length > 0) {
+  //       toast.error("product already set to cart");
+  //       setBtn(false);
+  //     } else {
+  //       loginUser.order.push({ ...newpro, qty: 1 });
+  //       console.log(userData);
+  //       toast.success("Successful add to cart");
+  //     }
+  //   } else {
+  //     toast.error("Please Loging");
+  //     navigate("/login");
+  //   }
+  // };
+  // console.log(userData);
   return (
     <>
       <Navigation />
       <div className="mt-3">
-        {ViewProduct.map((item, index) => (
+        {product&&(
           <Card
-            key={item.Id || index}
+            key={product._id}
             style={{ width: "16rem", overflow: "hidden", margin: "auto" }}>
             <Card.Img
               variant="top"
               style={{ width: "16rem", height: "25rem" }}
-              src={item.Image}
+              src={product.image}
             />
             <Card.Body>
-              <h6 className="mt-1">₹{item.Price}</h6>
-              <del className="text-secondary">₹{item.OldPrice}</del>
-              <Card.Title>{item.ProductName}</Card.Title>
-              {btn ? (
-                <Button onClick={addItem} type="primary">
+              <h6 className="mt-1">₹{product.price}</h6>
+              <Card.Title>{product.title}</Card.Title>
+                <Button onClick={addToCart} type="primary">
                   Add To Cart
                 </Button>
-              ) : (
-                <Button onClick={() => navigate("/Cart")} type="primary">
-                  <i class="fab fa-opencart"></i>
-                </Button>
-              )}
             </Card.Body>
           </Card>
-        ))}
+        )}
       </div>
     </>
   );
