@@ -1,33 +1,49 @@
 import React, { useReducer, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
-
+import axios from "axios";
 function AdminLging() {
   const Navigation = useNavigate();
-  const [admin, setadmin] = useState([
-    {
-      userName: "admin",
-      password: "password",
-    },
-  ]);
   const [error, setError] = useState("");
-  const usernameRef = useReducer("");
-  const PasswordRef = useRef("");
-  const submit = (e) => {
+  const usernameRef = useRef();
+  const PasswordRef = useRef();
+  const submit = async(e) => {
     e.preventDefault();
     const username = usernameRef.current.value;
     const password = PasswordRef.current.value;
-
-    const user = admin.find(
-      (item) => item.userName === username && item.password === password
-    );
-    if (user) {
-      toast.success("Thank You Login");
-      Navigation("/addminhome");
-    } else {
-      toast.error("User Not Found");
-      setError("Login failed. Invalid username or password.");
-    }
+  if(!username||!password){
+    setError('Pleasse Fill In All Fields');
+    return ;
+  }
+  if(username!=="jasir"){
+    setError("Please Enter Correct User Name");
+    return;
+  }
+  if(password!=="1234"){
+    setError("Please Enter Correct Password")
+  }
+  try {
+    const data={
+      username:username,
+      password:password
+    };
+    const response=await  axios.post("http://localhost:3001/admin/login",data)
+    localStorage.setItem("admin_Token",response.data.token)
+    toast.success('Admin Login Success')
+    Navigation('/addminhome')
+  } catch (error) {
+    toast.error("Pleas Enter Valied User Name Or Password"||error)
+  }
+    // const user = admin.find(
+    //   (item) => item.userName === username && item.password === password
+    // );
+    // if (user) {
+    //   toast.success("Thank You Login");
+    //   Navigation("/addminhome");
+    // } else {
+    //   toast.error("User Not Found");
+    //   setError("Login failed. Invalid username or password.");
+    // }
   };
   return (
     <div

@@ -6,11 +6,16 @@ import { AiOutlineShoppingCart } from "react-icons/ai";
 import { useNavigate } from "react-router-dom";
 import { AllContext } from "../App";
 import { Button, Form } from "react-bootstrap";
+import {toast} from 'react-toastify'
 function Navigation() {
   const navigate = useNavigate();
-  const { login, setLoging, setCart, setSearch } = useContext(AllContext);
+  const jwtToken=localStorage.getItem('user_Token'||'admin_Token')
+  const id =localStorage.getItem('userId');
+  const { login, setLoging, setCart,user } = useContext(AllContext);
   const handleLogout = () => {
-    setLoging(false);
+    localStorage.removeItem('userId');
+    localStorage.removeItem('user_Token')
+    localStorage.removeItem('admin_Token');
     setCart([]);
   };
   return (
@@ -58,7 +63,6 @@ function Navigation() {
               className="me-2 my-3 mr-3"
               aria-label="Search"
               style={{ borderRadius: "5rem" }}
-              onChange={(e) => setSearch(e.target.value)}
             />
             <Button
               className="m-3 mx-2"
@@ -69,7 +73,7 @@ function Navigation() {
             </Button>
           </Form>
 
-          {login ? (
+          {jwtToken ? (
             <>
               <Nav.Link
                 style={{ fontSize: "1.2rem" }}
