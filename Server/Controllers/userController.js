@@ -175,7 +175,7 @@ const cartProduct = async (req, res) => {
       status: "fail",
       message: "Invalid User ID format",
     });
-  const user = userSchema.findById(userId);
+    const user = await userSchema.findById(userId).populate('cart').exec();
   if (!user) {
     return res.status(404).json({
       status: "fail",
@@ -190,7 +190,8 @@ const cartProduct = async (req, res) => {
       data: [],
     });
   }
-  const cartProducts = await userSchema.find({ _id: { $in: cartUserId } });
+  
+  const cartProducts = await productSchema.find({ _id: { $in: user.cart } });
   res.status(200).json({
     status: "success",
     message: "successfull fetch products",

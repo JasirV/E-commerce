@@ -15,7 +15,7 @@ const Cart = () => {
   const fetchCat=async()=>{
     try {
       const response = await Axios.get(`users/${userId}/cart`);
-      console.log(response.data.data);
+      console.log(response.data);
       setCart(response.data.data)
     } catch (error) {
       console.log("Error fecthing the product",error);
@@ -68,6 +68,8 @@ const clearCart=()=>{
 };
 
 const totalCartPrice=cart.reduce((total,item)=>total+item.price*item.qty,0)
+
+console.log(cart);
 
 
 

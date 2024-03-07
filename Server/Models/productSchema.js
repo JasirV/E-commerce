@@ -9,7 +9,10 @@ const productSchema=new mongoose.Schema({
     category: {
         type: String,
         enum: ['cat', 'dog'] 
-    }
+    },
+    qty:Number,
+    stock:Number,
+    oldPrice:Number
 })
 
 module.exports=mongoose.model('product',productSchema)

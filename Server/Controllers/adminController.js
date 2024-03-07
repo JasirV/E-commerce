@@ -77,7 +77,7 @@ const userById = async (req, res) => {
 //create Products
 const createProduct = async (req, res) => {
   
-  const { title, description, price, image, category } = req.body;
+  const { title, description, price, image, category,stock,oldPrice } = req.body;
   const newProduct = await Product.create({
     title,
     description,
