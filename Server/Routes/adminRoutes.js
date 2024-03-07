@@ -3,9 +3,10 @@ const adminRoutes = express.Router();
 const adminController = require("../Controllers/adminController");
 const tryCatch=require('../Middlewares/tryCatchMiddleware')
 const adminauth=require('../Middlewares/adminAuth')
+const uploadImage=require('../Middlewares/upload/imageUpload')
 adminRoutes.post('/login',adminController.adminLogin)
 .use(adminauth)
-.post("/products", tryCatch(adminController.createProduct))
+.post("/products", uploadImage,(adminController.createProduct))
 .get('/products',tryCatch(adminController.adminProduct))
 .get('/users',tryCatch(adminController.users))
 .get('/:id/users',tryCatch(adminController.userById))

@@ -1,75 +1,56 @@
 import React, { useState } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
-import { useContext } from "react";
-import { AllContext } from "../App";
 import { Button, Form } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 import SaidBar from "./SaidBar";
+import { toast } from "react-toastify";
+import axios from "axios";
+import { AXIOS } from "../App";
 
 function Edit() {
-  const { product, setProduct } = useContext(AllContext);
   const navigate = useNavigate();
-
-  const [formData, setFormData] = useState({
-    Id: 73,
-    ProductName: "",
-    OldPrice: "",
-    Price: "",
-    Image: "",
-    Animal: "",
-    Qty: 0,
-    Stock: 0,
-  });
-
-  const [errors, setErrors] = useState({});
-
-  const handleInputChange = (e) => {
-    const { name, value } = e.target;
-    if (name === "ProductName") {
-      setFormData({
-        ...formData,
-        [name]: value.toUpperCase(),
-      });
-    } else {
-      setFormData({
-        ...formData,
-        [name]: value,
-      });
-    }
+  const [title, setTitle] = useState("");
+  const [description, setDescription] = useState("");
+  const [price, setPrice] = useState("");
+  const [image, setImage] = useState(null);
+  const [category, setCategory] = useState("");
+  const [stock, setStock] = useState("");
+  console.log(title ,description ,price ,image ,category ,stock);
+  const handleImageChange = (img) => {
+    const selectImage = img.target.files[0];
+    setImage(selectImage);
   };
-
-  const handleSubmit = (e) => {
+  const handleChangeCategory = (e) => {
+    setCategory(e.target.value);
+  };
+  const handleAdd = async (e) => {
     e.preventDefault();
+    if (!title || !description || !price || !image || !category || !stock) {
+      toast.error("please Fill In All Fields");
+      return;
+    }
+    const formData = new FormData();
+    formData.append("title", title);
+    formData.append("description", description);
+    formData.append("price", price);
+    formData.append("image", image);
+    formData.append("category", category);
+    formData.append("stock", stock);
 
-    const newErrors = {};
-    if (!formData.ProductName.trim()) {
-      newErrors.ProductName = "Product Name is required";
-    }
-    if (!formData.Price.trim()) {
-      newErrors.Price = "Price is required";
-    }
-    if (!formData.Animal.trim()) {
-      newErrors.Animal = "Animal is required";
-    }
-    if (!formData.Image.trim()) {
-      newErrors.Image = "Image is required";
-    }
-    if (!formData.OldPrice.trim()) {
-      newErrors.OldPrice = "Old Price is required";
-    }
-    if (formData.Stock <= 0) {
-      newErrors.Stock = "Stock is required";
-    }
-
-    if (Object.keys(newErrors).length === 0) {
-      setProduct([...product, { ...formData, Id: formData.Id + 1 }]);
-      navigate("/addminprodut");
-    } else {
-      setErrors(newErrors);
+    try {
+      const response = await AXIOS.post("/admin/products", formData);
+      console.log(response);
+      if (response.status === 201) {
+        toast.success("Product Added Successfully");
+        navigate("/addminprodut");
+      } else {
+        toast.error("Failed To Add Product ");
+      }
+    } catch (error) {
+      console.error("Error Uploading Product", error.message);
+      toast.error("Failed To Add Product");
     }
   };
-
-  console.log(product);
 
   return (
     <div className="d-flex ">
@@ -80,23 +61,18 @@ function Edit() {
         fluid
         className="mt-3 w-75"
         style={{ margin: "auto", overflow: "auto", height: "90vh" }}>
-        <Form
-          className="rounded shadow p-5 mb-5 bg-white"
-          onSubmit={handleSubmit}>
+        <Form className="rounded shadow p-5 mb-5 bg-white">
           <Form.Group className="mb-3" controlId="formProductName">
             <Form.Label>
               <h6>Product Name</h6>
             </Form.Label>
             <Form.Control
               type="text"
-              name="ProductName"
+              name="title"
               placeholder="Product Name"
-              value={formData.ProductName}
-              onChange={handleInputChange}
+              onChange={(e)=>setTitle(e.target.value)}
+              required
             />
-            {errors.ProductName && (
-              <p className="text-danger">{errors.ProductName}</p>
-            )}
           </Form.Group>
           <Form.Group className="mb-3" controlId="formProductPrice">
             <Form.Label>
@@ -104,53 +80,49 @@ function Edit() {
             </Form.Label>
             <Form.Control
               type="text"
-              name="Price"
+              name="price"
               placeholder="Price"
-              value={formData.Price}
-              onChange={handleInputChange}
+              onChange={(e)=>setPrice(e.target.value)}
+              required
             />
-            {errors.Price && <p className="text-danger">{errors.Price}</p>}
           </Form.Group>
           <Form.Group className="mb-3" controlId="formProductPrice">
             <Form.Label>
-              <h6>Old Price</h6>
+              <h6>Description</h6>
             </Form.Label>
             <Form.Control
               type="text"
-              name="OldPrice"
-              placeholder="Price"
-              value={formData.OldPrice}
-              onChange={handleInputChange}
+              name="description"
+              placeholder="Description"
+              onChange={(e)=>setDescription(e.target.value)}
+              required
             />
-            {errors.OldPrice && (
-              <p className="text-danger">{errors.OldPrice}</p>
-            )}
           </Form.Group>
           <Form.Group className="mb-3" controlId="formProductPrice">
             <Form.Label>
               <h6>Image</h6>
             </Form.Label>
             <Form.Control
-              type="text"
-              name="Image"
+              type="file"
+              name="image"
               placeholder="ImageURL"
-              value={formData.Image}
-              onChange={handleInputChange}
+              onChange={handleImageChange}
+              required
             />
-            {errors.Image && <p className="text-danger">{errors.Image}</p>}
           </Form.Group>
           <Form.Group className="mb-3" controlId="formProductPrice">
             <Form.Label>
               <h6>Animal</h6>
             </Form.Label>
-            <Form.Control
-              type="datalist"
-              name="Animal"
-              placeholder="Animal"
-              value={formData.Animal}
-              onChange={handleInputChange}
-            />
-            {errors.Animal && <p className="text-danger">{errors.Animal}</p>}
+            <select
+
+              onChange={handleChangeCategory}
+              >
+                
+                <option >select</option>
+                <option value="dog">DOG</option>
+                <option value="cat">CAT</option>
+              </select>
           </Form.Group>
           <Form.Group className="mb-3" controlId="formProductPrice">
             <Form.Label>
@@ -158,14 +130,13 @@ function Edit() {
             </Form.Label>
             <Form.Control
               type="datalist"
-              name="Stock"
+              name="stock"
               placeholder="Stock"
-              value={formData.Stock}
-              onChange={handleInputChange}
+              onChange={(e)=>setStock(e.target.value)}
+              required
             />
-            {errors.Stock && <p className="text-danger">{errors.Stock}</p>}
           </Form.Group>
-          <Button variant="primary" type="submit">
+          <Button variant="primary" type="submit" onClick={handleAdd}>
             Submit
           </Button>
         </Form>

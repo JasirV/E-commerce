@@ -76,16 +76,18 @@ const userById = async (req, res) => {
 
 //create Products
 const createProduct = async (req, res) => {
-  
-  const { title, description, price, image, category,stock,oldPrice } = req.body;
+  console.log('sdfghj')
+  const { title, description, price, image, category,stock} = req.body;
+  console.log(title, description, price, image, category,stock,'asdghj')
   const newProduct = await Product.create({
     title,
     description,
     price,
     image,
     category,
+    stock
   });
-  res.status(200).json({
+  res.status(201).json({
     status: "success",
     message: "Successfuly Create New Product ",
     data: newProduct,

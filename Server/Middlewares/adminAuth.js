@@ -8,7 +8,6 @@ if(!head){
     })
 }
 const token=head;
-console.log(token)
 
 if(!token){
     return res.status(403).json({
