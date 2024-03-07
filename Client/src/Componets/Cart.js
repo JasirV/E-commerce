@@ -202,14 +202,13 @@ const totalCartPrice=cart.reduce((total,item)=>total+item.price*item.qty,0)
               <Card.Img
                 className="img-fluid"
                 variant="top"
-                src={item.Image}
+                src={item.image}
                 style={{ height: "25rem" }}
               />
               <Card.Body>
-                <Card.Title>{item.ProductName}</Card.Title>
-                <Card.Text>Price: ₹{item.Price}</Card.Text>
+                <Card.Title>{item.title}</Card.Title>
+                <Card.Text>Price: ₹{item.price}</Card.Text>
                 <Card.Text>
-                  Old Price: <del>₹{item.OldPrice}</del>
                 </Card.Text>
                 <h5
                   className="border border-secondary p-2 w-50 mx-5"

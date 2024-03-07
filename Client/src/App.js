@@ -25,8 +25,9 @@ import AdminLging from "./Admin/AdminLging";
 import UsersOders from "./Admin/UsersOders";
 import axios from "axios";
 
+
 export const Axios=axios.create({
-  baseURL:process.env.REACT_APP_BASE_URL || 'http://localhost:3001/',
+  baseURL: 'http://localhost:3001/',
   headers:{
     "Content-Type":'application/json',
     Authorization:localStorage.getItem('user_Token'),
@@ -34,9 +35,9 @@ export const Axios=axios.create({
 });
 
 export const AXIOS=axios.create({
-  baseURL:process.env.REACT_APP_BASE_URL||'http://localhost:3001/',
+  baseURL:'http://localhost:3001/',
   headers:{
-    "Content-Type":"application/json",
+    "Content-Type": "application/json",
     Authorization:localStorage.getItem("admin_Token")
   },
 })

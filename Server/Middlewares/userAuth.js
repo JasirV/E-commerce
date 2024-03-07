@@ -6,7 +6,7 @@ module.exports = function verifyToken(req, res, next) {
       message: "No Token provider",
     });
   }
-  const token = authHeader.split(" ")[1];
+  const token = authHeader;
   if (!token) {
     return res.status(403).json({
       status: "Invalid Token ",

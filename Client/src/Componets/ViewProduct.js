@@ -15,7 +15,7 @@ const ViewProduct = () => {
 useEffect(()=>{
   const viewProduct=async ()=>{
     try {
-      const response=await Axios.get(`users/products/${Id}`);
+      const response=await Axios.get(`/users/products/${Id}`);
       setProduct(response.data.product);
     } catch (error) {
       console.log("Error fetching the Product",error);
@@ -28,12 +28,12 @@ useEffect(()=>{
 
 const addToCart=async ()=>{
   try {
-    const response =await Axios.post(`users/${userId}/cart`,{
+    const response =await Axios.post(`/users/${userId}/cart`,{
       productId:Id,
     });
     console.log(response);
     if(response){
-      await Axios.get(`users/${userId}/cart`);
+      await Axios.get(`/users/${userId}/cart`);
       return toast.success("Add To Cart")
     }
   } catch (error) {
