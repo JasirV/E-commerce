@@ -1,6 +1,6 @@
-import React, { useContext, useEffect, useState } from "react";
-import { AllContext, Axios } from "../App";
-import { Button, Card, ToastBody } from "react-bootstrap";
+import React, {  useEffect, useState } from "react";
+import {  Axios } from "../App";
+import { Button, Card,} from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import Navigation from "./Navigation";
@@ -9,7 +9,6 @@ const userId=localStorage.getItem('userId')
 
 const Cart = () => {
   const [cart,setCart]=useState([])
-  const [price,setPrice]=useState(0)
   const Navigate = useNavigate();
   console.log(userId);
   const fetchCat=async()=>{
@@ -239,7 +238,7 @@ console.log(cart);
                 <button
                   className=" m-2 btn btn-light"
                   onClick={() => {
-                    RemoveCartItem(item.Id);
+                    RemoveCartItem(item._id);
                   }}>
                   Remove
                 </button>
@@ -251,13 +250,13 @@ console.log(cart);
           <Card
             className="m-2 w-75 p-2 mr-5 shadow"
             style={{ overflow: "hidden" }}>
-            <Card.Title>{}</Card.Title>
+            <Card.Title></Card.Title>
             <Card.Body>
               <h3>
-                Total: <span className="text-success">₹{totalCartItem}</span>
+                Total: <span className="text-success">₹{totalCartPrice}</span>
               </h3>
-              {/* <del className="text-secondary">₹{offer}</del>
-              <h5>{itemsincart} Items</h5> */}
+              {/* <del className="text-secondary">₹{offer}</del> */}
+              <h5>{totalCartItem} Items</h5>
               <MDBIcon
                 fas
                 icon="truck"
@@ -274,7 +273,6 @@ console.log(cart);
             </Card.Body>
           </Card>
         </div>
-        <h1>NOProduct</h1>
     </>
   );
 };

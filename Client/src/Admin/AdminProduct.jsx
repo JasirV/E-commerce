@@ -1,12 +1,10 @@
 import React, { useEffect, useState } from 'react'
 import SaidBar from './SaidBar'
-import { useContext } from 'react'
-import { AXIOS, AllContext } from '../App'
+import { AXIOS, } from '../App'
 import {  Card } from 'react-bootstrap'
 import { useNavigate } from 'react-router-dom'
 import {  MDBIcon } from 'mdb-react-ui-kit'
 import {toast} from 'react-toastify'
-import axios from 'axios'
 
 
 
@@ -17,6 +15,7 @@ const AdminProduct = () => {
 try {
     const response=await AXIOS.get('/admin/products')
     console.log(response.data.data);
+    setProduct(response.data.data)
     
 } catch (error) {
     console.log(error);
@@ -31,7 +30,7 @@ const removeProduct=async (id)=>{
     try {
         const productId=id
 
-        const response =await AXIOS.delete('admin/products',{data:{productId:productId}})
+        const response =await AXIOS.delete('admin/products',{data:{id:productId}})
         allProducts();
         console.log(response);
     } catch (error) {
