@@ -10,6 +10,9 @@ import {
 import { NavLink } from "react-router-dom";
 
 const SaidBar = () => {
+  const adminLogout=()=>{
+    localStorage.removeItem('admin_Token');
+  }
   return (
     <div
       style={{ display: "flex", height: "100vh", overflow: "scroll initial" }}>
@@ -41,8 +44,8 @@ const SaidBar = () => {
             <NavLink to="/Edit" activeClassName="activeClicked">
               <CDBSidebarMenuItem icon="plus">Add Product</CDBSidebarMenuItem>
             </NavLink>
-            <NavLink to="/" activeClassName="activeClicked">
-              <CDBSidebarMenuItem icon="home">Home</CDBSidebarMenuItem>
+            <NavLink to="/" onClick={()=>adminLogout} activeClassName="activeClicked">
+              <CDBSidebarMenuItem  icon="home">Home</CDBSidebarMenuItem>
             </NavLink>
           </CDBSidebarMenu>
         </CDBSidebarContent>

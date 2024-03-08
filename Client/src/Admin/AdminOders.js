@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import SaidBar from "./SaidBar";
 import { AllContext } from "../App";
 import {
@@ -10,24 +10,42 @@ import {
   MDBRow,
   MDBTypography,
 } from "mdb-react-ui-kit";
+import {toast} from "react-toastify"
+import axios from "axios";
+import { AXIOS } from "../App";
 
 const AdminOders = () => {
-  const { sale } = useContext(AllContext);
-  console.log(sale);
+
+  const[order,setOrder]=useState([])
+
+  useEffect(()=>{
+    const fetchOrders=async()=>{
+      try{
+        const response=await AXIOS.get('/admin/order')
+        console.log(response.data.product);
+        if(response.status===200){
+          setOrder(response.data.product)
+        } 
+      }catch(error){
+        console.log("Error Fetching The Products",error);
+        toast.error("Error")
+      }
+    };
+    fetchOrders();
+  },[])
   return (
     <div className="d-flex">
       <div>
         <SaidBar />
       </div>
-      {sale.length > 0 ? (
+      {order.length > 0 ? (
         <div
           fluid
           className="mt-3"
           style={{
             overflow: "scroll",
             height: "90vh",
-            overflow: "auto",
-            height: "90vh",
+            width:'100%'
           }}>
           <MDBContainer className="py-5 h-100">
             <MDBRow className="justify-content-center align-items-center h-100">
@@ -46,21 +64,21 @@ const AdminOders = () => {
                   </div>
                 </div>
 
-                {sale.usercart.map((item, index) => (
-                  <MDBCard key={item.Id || index} className="rounded-3 mb-4">
+                {order.map((item, index) => (
+                  <MDBCard key={item._id || index} className="rounded-3 mb-4">
                     <MDBCardBody className="p-4">
                       <MDBRow className="justify-content-between align-items-center">
                         <MDBCol md="12" lg="6" xl="4">
                           <MDBCardImage
                             className="rounded-3"
                             fluid
-                            src={item.Image}
+                            src={item.image}
                             alt="products"
                           />
                         </MDBCol>
                         <MDBCol md="12" lg="6" xl="8">
                           <p className="lead fw-normal mb-2">
-                            {item.ProductName}
+                            {item.title}
                           </p>
                           <p>
                             <span className="text-muted">
@@ -83,7 +101,7 @@ const AdminOders = () => {
                         </MDBCol>
                         <MDBCol md="12" lg="6" xl="4">
                           <MDBTypography tag="h5" className="mb-0">
-                            ₹{item.Price}
+                            ₹{item.total_amount}
                           </MDBTypography>
                         </MDBCol>
 

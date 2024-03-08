@@ -28,6 +28,7 @@ const Cart = () => {
 
   const RemoveCartItem=async(id)=>{
     try {
+      console.log(id);
       const productId=id;
       const response=await Axios.delete(`users/${userId}/cart`,{data:{productId:productId}})
       fetchCat();

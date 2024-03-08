@@ -21,14 +21,17 @@ cloudinary.config({
 });
 
 const uploadImage = (req, res, next) => {
-  console.log(process.env.CLOUD_NAME, 'aaaa');
-  console.log("multersss");
   upload.single("image")(req, res, async (err) => {
     if (err) {
       return res.status(400).json({ message: err.message });
     }
+    console.log(req);
     try {
-        console.log(req.file,'12578')
+      // Check if req.file is present and not undefined
+      if (!req.file) {
+        throw new Error("No file uploaded");
+      }
+
       const result = await cloudinary.uploader.upload(req.file.path, {
         folder: "Ecommerce-imgs"
       });
@@ -37,14 +40,15 @@ const uploadImage = (req, res, next) => {
         throw new Error("Upload to Cloudinary failed");
       }
 
-      console.log(result, '1234567');
       req.body.image = result.secure_url;
 
-      fs.unlink(req.file.path, (unlinker) => {
-        if (unlinker) {
-          console.log("Error deleting local files", unlinker);
+      // Delete the temporary file after uploading to Cloudinary
+      fs.unlink(req.file.path, (unlinkerError) => {
+        if (unlinkerError) {
+          console.log("Error deleting local files", unlinkerError);
         }
       });
+
       next();
     } catch (error) {
       console.error("Error uploading file to Cloudinary:", error);

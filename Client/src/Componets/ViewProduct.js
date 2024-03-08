@@ -16,6 +16,7 @@ useEffect(()=>{
   const viewProduct=async ()=>{
     try {
       const response=await Axios.get(`/users/products/${Id}`);
+      console.log(response.data);
       setProduct(response.data.product);
     } catch (error) {
       console.log("Error fetching the Product",error);
