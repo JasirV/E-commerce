@@ -26,6 +26,7 @@ import AdminLging from "./Admin/AdminLging";
 import UsersOders from "./Admin/UsersOders";
 import axios from "axios";
 import PaymentSuccessPage from "./Componets/PaymentSuccess";
+import PaymentCancel from "./Componets/PaymentCanel";
 
 
 export const Axios=axios.create({
@@ -113,6 +114,7 @@ const [buy,setBuy]=useState([])
           <Route path="/adminLoging" element={<AdminLging />} />
           <Route path="/users/:Id" element={<UsersOders />} />
           <Route path="/users/payment/success" element={<PaymentSuccess/>} />
+          <Route path="/users/payment/cancel" element={<PaymentCancel/>} />
         
           <Route />
         </Routes>
