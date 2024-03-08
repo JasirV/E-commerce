@@ -151,15 +151,14 @@ const addToCart = async (req, res) => {
           message: 'User not found'
       });
   }
-
-  if (user.cart.includes(productId)) {
+  const isProductInCart = user.cart.some(item => item.productId.equals(productId));
+  if (isProductInCart) {
       return res.status(409).json({
           status: 'fail',
           message: 'Product already exists in the cart'
       });
   }
  await userSchema.updateOne({_id:userId},{ $addToSet: { cart: { productId: productId}}})
- console.log(user.cart);
   res.status(200).json({
       status:'success',
       message:'successfully product added to cart'
@@ -191,7 +190,6 @@ const cartProduct = async (req, res) => {
         })
     }
     const cartProducts= user.cart
-    console.log(user.cart);
         res.status(200).json({
             status:'success',
             message:'successfull fetched cart products',
@@ -202,7 +200,6 @@ const cartProduct = async (req, res) => {
 const updateCartItemQuantity =async(req,res)=>{
   const userId=req.params.id;
   const {id,quantity}=req.body;
-
   const user=await userSchema.findById(userId);
   if(!user){
     return res.status(404).json({
@@ -242,7 +239,7 @@ if(!user){
     message:'User Not Found!'
   })
 }
-await userSchema.updateOne({_id:userId},{$pull:{cart:id}});
+await userSchema.updateOne({_id:userId},{$pull:{cart:{productId:id}}});
 res.status(200).json({
   status:"success",
   message:'Product Deleted',
@@ -359,9 +356,8 @@ const PaymetSection = async (req, res) => {
   const userId = req.params.id;
   const user = await userSchema
     .findOne({ _id: userId })
-    .populate("cart")
-    .exec();
-
+    .populate("cart.productId")
+console.log(user);
   if (!user) {
     return res.status(404).json({
       status: "fail",
@@ -372,20 +368,23 @@ const PaymetSection = async (req, res) => {
 
   if (cartProduct.length === 0) {
     res.status(200).json({
-      status: "succes",
+      status: "success",
       message: "cart is empty",
+      data:[]
     });
   }
   const items = cartProduct.map((i) => {
+    console.log(i.productId.title);
     return {
       price_data: {
         currency: "inr",
-        product_data: {
-          name: i.description,
+        product_data: { 
+          images:[i.productId.image],
+          name:i.productId.title,
         },
-        unit_amount: Math.round(i.price * 100),
+        unit_amount: Math.round(i.productId.price * 100),
       },
-      quantity: 1,
+      quantity: i.quantity,
     };
   });
   const session = await stripe.checkout.sessions.create({

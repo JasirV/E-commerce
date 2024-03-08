@@ -18,12 +18,14 @@ import Users from "./Admin/Users";
 import AdminProduct from "./Admin/AdminProduct";
 import AdminOders from "./Admin/AdminOders";
 import ProductEdit from "./Admin/ProductEdit";
+import PaymentSuccess from "./Componets/PaymentSuccess";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import "bootstrap-icons/font/bootstrap-icons.css";
 import AdminLging from "./Admin/AdminLging";
 import UsersOders from "./Admin/UsersOders";
 import axios from "axios";
+import PaymentSuccessPage from "./Componets/PaymentSuccess";
 
 
 export const Axios=axios.create({
@@ -110,6 +112,8 @@ const [buy,setBuy]=useState([])
           <Route path="/ProductEdit/:Id" element={<ProductEdit />} />
           <Route path="/adminLoging" element={<AdminLging />} />
           <Route path="/users/:Id" element={<UsersOders />} />
+          <Route path="/users/payment/success" element={<PaymentSuccess/>} />
+        
           <Route />
         </Routes>
       </AllContext.Provider>

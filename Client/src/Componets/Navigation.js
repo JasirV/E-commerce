@@ -1,4 +1,4 @@
-import { useContext } from "react";
+import { useContext, useEffect } from "react";
 import Container from "react-bootstrap/Container";
 import Nav from "react-bootstrap/Nav";
 import Navbar from "react-bootstrap/Navbar";
@@ -6,12 +6,14 @@ import { AiOutlineShoppingCart } from "react-icons/ai";
 import { useNavigate } from "react-router-dom";
 import { AllContext } from "../App";
 import { Button, Form } from "react-bootstrap";
+import axios from "axios";
 import {toast} from 'react-toastify'
 function Navigation() {
   const navigate = useNavigate();
   const jwtToken=localStorage.getItem('user_Token'||'admin_Token')
   const id =localStorage.getItem('userId');
-  const { login, setLoging, setCart,user } = useContext(AllContext);
+  const { setCart,setSearch } = useContext(AllContext);
+
   const handleLogout = () => {
     localStorage.removeItem('userId');
     localStorage.removeItem('user_Token')
@@ -63,6 +65,7 @@ function Navigation() {
               className="me-2 my-3 mr-3"
               aria-label="Search"
               style={{ borderRadius: "5rem" }}
+              onChange={(e) => setSearch(e.target.value)}
             />
             <Button
               className="m-3 mx-2"

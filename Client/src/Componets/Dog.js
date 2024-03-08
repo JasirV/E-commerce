@@ -12,6 +12,7 @@ const Dog = () => {
   const Navigate = useNavigate();
   const [product,setProduct]=useState([])
   const category="dog"
+  const {search}=useContext(AllContext)
 useEffect(()=>{
   const DogProduct =async ()=>{
     try {
@@ -37,12 +38,21 @@ const addToWishList=async(id)=>{
     toast.error(error.response.data.message)
   }
 }
+const Search = product.filter((item) => {
+  if (search === "") {
+    return item;
+  } else if (item.title.toLowerCase().includes(search.toLowerCase())) {
+    return item;
+  } else {
+    return "";
+  }
+});
 
   return (
     <div>
       <Navigation />
       <div className="d-flex flex-wrap m-3 justify-content-center">
-        {product.map((item, index) => (
+        {Search.map((item, index) => (
           <Card
             onClick={() => {
               Navigate(`/View/${item._id}`);

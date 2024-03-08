@@ -10,6 +10,7 @@ import { toast } from "react-toastify";
 const userId=localStorage.getItem('userId');
 const Cat = () => {
   const Navigate = useNavigate();
+  const{search}=useContext(AllContext)
   const [product,setProduct]=useState([])
   const category="cat"
 
@@ -26,6 +27,16 @@ const Cat = () => {
     };
     catProducts();
   },[]);
+  const Search = product.filter((item) => {
+    if (search === "") {
+      return item;
+    } else if (item.title.toLowerCase().includes(search.toLowerCase())) {
+      return item;
+    } else {
+      return "";
+    }
+  });
+
 const addToWishList=async (id)=>{
   try {
     const response =await Axios.pos(`users/${userId}/wishlist`,{
@@ -45,38 +56,43 @@ const addToWishList=async (id)=>{
       <Navigation />
       <hr />
       <div className="d-flex flex-wrap m-3 justify-content-center">
-        {product.map((item, index) => (
-          <Card
-            onClick={() => {
-              Navigate(`/View/${item._id}`);
-            }}
-            key={item._id || index}
-            className="m-2"
-            style={{ width: "16rem", overflow: "hidden" }}>
-            <div
-              style={{
-                overflow: "hidden",
-                borderTopLeftRadius: "8px",
-                borderTopRightRadius: "8px",
-                display: "flex",
-                justifyContent: "center",
-                alignItems: "center",
-                width: "100%",
-              }}>
-              <Card.Img
-                className="img-fluid"
-                variant="top"
-                src={item.image}
-                style={{ height: "16rem", width: "12rem" }}
-              />
-            </div>
-            <Card.Body>
-              <h6 className="mt-1">₹{item.price}</h6>
-              <Card.Title>{item.title}</Card.Title>
-            </Card.Body>
-          </Card>
-        ))}
+  {Search.map((item, index) => (
+    <Card
+      onClick={() => {
+        Navigate(`/View/${item._id}`);
+      }}
+      key={item._id || index}
+      className="m-2 position-relative" 
+      style={{ width: "16rem", overflow: "hidden" }}
+    >
+      <div
+        style={{
+          overflow: "hidden",
+          borderTopLeftRadius: "8px",
+          borderTopRightRadius: "8px",
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          width: "100%",
+        }}
+      >
+        <Card.Img
+          className="img-fluid"
+          variant="top"
+          src={item.image}
+          style={{ height: "16rem", width: "12rem" }}
+        />
       </div>
+      <Card.Body>
+        <div className="d-flex justify-content-between align-items-center">
+          <h6 className="mt-1">₹{item.price}</h6>
+          
+        </div>
+        <Card.Title>{item.title}</Card.Title>
+      </Card.Body>
+    </Card>
+  ))}
+</div>
       <Footer />
     </div>
   );

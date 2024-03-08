@@ -38,8 +38,9 @@ const Cart = () => {
   };
 
   const buyProduct =async()=>{
+    console.log("run");
     try {
-      const response =await Axios.post(`users/${userId}/payment`);
+      const response =await Axios.post(`/users/${userId}/payment`);
       console.log(response.data.url);
       window.location.href=response.data.url
     } catch (error) {
@@ -47,8 +48,8 @@ const Cart = () => {
       console.log(error);
     }
   }
-const handleQuantity=async (cartId,quantityChange)=>{
-  const data={id:cartId,quantityChange};
+const handleQuantity=async (cartId,quantity)=>{
+  const data={id:cartId,quantity};
   try {
     await Axios.put(`/users/${userId}/cart`,data);
     const response=await Axios.get(`/users/${userId}/cart`);
@@ -236,11 +237,11 @@ console.log(cart);
                   -
                 </button>
                 <br />
-                <Button
+                {/* <Button
                   className=" m-2"
                   onClick= {buyProduct}>
                   Buy
-                </Button>
+                </Button> */}
                 <button
                   className=" m-2 btn btn-light"
                   onClick={() => {
@@ -267,10 +268,7 @@ console.log(cart);
                 fas
                 icon="truck"
                 className="mt-2"
-                onClick={() => {
-                  Navigate("/Payment");
-                  // OderNow();
-                }}
+                onClick={buyProduct}
               />
               <br />
               <Button onClick={clearCart} className="mt-2 btn btn-light">

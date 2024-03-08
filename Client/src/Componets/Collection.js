@@ -16,7 +16,6 @@ const Collection = () => {
           'http://localhost:3001/users/products'
         );
         setProduct(response.data.product);
-        console.log(response.data.product);
       } catch (error) {
         console.log(error);
         toast.error(error.message || "Failed to fetch Products");
@@ -25,6 +24,15 @@ const Collection = () => {
   
     allProducts();
   }, []);
+  const Search = products.filter((item) => {
+    if (search === "") {
+      return item;
+    } else if (item.title.toLowerCase().includes(search.toLowerCase())) {
+      return item;
+    } else {
+      return "";
+    }
+  });
   
   // const Searches=products.filter((srch)=>{
   //   if(search===""){
@@ -83,7 +91,7 @@ const Collection = () => {
           </h5>
         </div>
         <div className="d-flex flex-wrap m-3 justify-content-center">
-          {products.map((item, index) => (
+          {Search.map((item, index) => (
             <Card
               onClick={() => {
                 Navigate(`/View/${item._id}`);
