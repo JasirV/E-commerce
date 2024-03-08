@@ -13,6 +13,7 @@ userRouter
   .use(verifyToken)
   .post("/:id/cart", tryCatch(userController.addToCart))
   .get("/:id/cart", tryCatch(userController.cartProduct))
+  .put("/:id/cart",tryCatch(userController.updateCartItemQuantity))
   .delete('/:id/cart',tryCatch(userController.deleteProduct))
   .post("/:id/wishlist", tryCatch(userController.addToWishList))
   .get("/:id/wishlist", tryCatch(userController.wishList))

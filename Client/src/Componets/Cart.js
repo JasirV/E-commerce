@@ -28,11 +28,9 @@ const Cart = () => {
 
   const RemoveCartItem=async(id)=>{
     try {
-      console.log(id);
       const productId=id;
-      const response=await Axios.delete(`users/${userId}/cart`,{data:{productId:productId}})
+      const response=await Axios.delete(`users/${userId}/cart`,{data:{id:productId}})
       fetchCat();
-      console.log(response);
     } catch (error) {
       console.log('Error fetching The Product',error);
       toast.error("error")
@@ -49,15 +47,18 @@ const Cart = () => {
       console.log(error);
     }
   }
-const deceaseQuantity=(id)=>{
-  const updateCart=cart.map((item)=>{
-    if(item._id===id&&item.qty>1){
-      return {...item,qty:item.qty-1};
+const handleQuantity=async (cartId,quantityChange)=>{
+  const data={id:cartId,quantityChange};
+  try {
+    await Axios.put(`/users/${userId}/cart`,data);
+    const response=await Axios.get(`/users/${userId}/cart`);
+    if(response.status===200){
+      return fetchCat()
     }
-    return item
-  });
-  setCart(updateCart);
-};
+  } catch (error) {
+    toast.error(error)
+  }
+}
 
 const totalCartItem=(item)=>{
   return item.price*item.qty;
@@ -67,7 +68,7 @@ const clearCart=()=>{
   setCart([])
 };
 
-const totalCartPrice=cart.reduce((total,item)=>total+item.price*item.qty,0)
+const totalCartPrice=cart.reduce((total,item)=>total+item.productId.price*item.quantity,0)
 
 console.log(cart);
 
@@ -199,34 +200,38 @@ console.log(cart);
           {cart.map((item) => (
             <Card
               className="m-2 mx-5"
-              key={item._id}
+              key={item.productId._id}
               style={{ width: "16rem", overflow: "hidden", margin: "auto" }}>
               <Card.Img
                 className="img-fluid"
                 variant="top"
-                src={item.image}
+                src={item.productId.image}
                 style={{ height: "25rem" }}
               />
               <Card.Body>
-                <Card.Title>{item.title}</Card.Title>
-                <Card.Text>Price: ₹{item.price}</Card.Text>
+                <Card.Title>{item.productId.title}</Card.Title>
+                <Card.Text>Price: ₹{item.productId.price}</Card.Text>
                 <Card.Text>
                 </Card.Text>
                 <h5
                   className="border border-secondary p-2 w-50 mx-5"
                   style={{ borderRadius: "5rem" }}>
-                  {item.qty}
+                  {item.quantity}
                 </h5>
                 <button
                   className="rounded-circle"
-                  style={{ width: "3rem", height: "3rem", border: ".2px" }}>
+                  style={{ width: "3rem", height: "3rem", border: ".2px" }}
+                  onClick={() => {
+                    handleQuantity(item._id,1);
+                  }}
+                  >
                   +
                 </button>
                 <button
                   className="rounded-circle m-2"
                   style={{ width: "3rem", height: "3rem", border: ".2px" }}
                   onClick={() => {
-                    deceaseQuantity(item._id);
+                    handleQuantity(item._id,-1);
                   }}>
                   -
                 </button>
@@ -239,7 +244,7 @@ console.log(cart);
                 <button
                   className=" m-2 btn btn-light"
                   onClick={() => {
-                    RemoveCartItem(item._id);
+                    RemoveCartItem(item.productId._id);
                   }}>
                   Remove
                 </button>

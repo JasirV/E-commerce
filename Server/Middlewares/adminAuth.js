@@ -7,7 +7,7 @@ if(!head){
         message:"no Token Provider"
     })
 }
-const token=head;
+const token=head.split(' ')[1];
 
 if(!token){
     return res.status(403).json({
