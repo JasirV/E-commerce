@@ -25,7 +25,6 @@ import "bootstrap-icons/font/bootstrap-icons.css";
 import AdminLging from "./Admin/AdminLging";
 import UsersOders from "./Admin/UsersOders";
 import axios from "axios";
-import PaymentSuccessPage from "./Componets/PaymentSuccess";
 import PaymentCancel from "./Componets/PaymentCanel";
 
 

@@ -15,18 +15,20 @@ function Edit() {
   const [image, setImage] = useState(null);
   const [category, setCategory] = useState("");
   const [stock, setStock] = useState("");
-  console.log(title ,description ,price ,image ,category ,stock);
+
   const handleImageChange = (img) => {
-    const selectImage = img.target.files[0];
-    setImage(selectImage);
+    const selectedImage = img.target.files[0];
+    setImage(selectedImage);
+    console.log(selectedImage);
   };
   const handleChangeCategory = (e) => {
     setCategory(e.target.value);
   };
-  const handleAdd = async (e) => {
+  const handileAdd = async (e) => {
     e.preventDefault();
+
     if (!title || !description || !price || !image || !category || !stock) {
-      toast.error("please Fill In All Fields");
+      toast.error("Please fill in all fields");
       return;
     }
     const formData = new FormData();
@@ -41,14 +43,14 @@ function Edit() {
       const response = await AXIOS.post("/admin/products", formData);
       console.log(response);
       if (response.status === 201) {
-        toast.success("Product Added Successfully");
-        navigate("/addminprodut");
+        toast.success("Product added successfully!");
+        navigate("/adminproduct");
       } else {
-        toast.error("Failed To Add Product ");
+        toast.error("Failed to add product.");
       }
     } catch (error) {
-      console.error("Error Uploading Product", error.message);
-      toast.error("Failed To Add Product");
+      console.error("Error uploading product:", error.message);
+      toast.error("Failed to add product.");
     }
   };
 
@@ -103,9 +105,8 @@ function Edit() {
               <h6>Image</h6>
             </Form.Label>
             <Form.Control
-              type="file"
-              name="image"
-              placeholder="ImageURL"
+               type="file"
+               name="image"
               onChange={handleImageChange}
               required
             />
@@ -136,7 +137,7 @@ function Edit() {
               required
             />
           </Form.Group>
-          <Button variant="primary" type="submit" onClick={handleAdd}>
+          <Button variant="primary" type="submit" onClick={handileAdd}>
             Submit
           </Button>
         </Form>
