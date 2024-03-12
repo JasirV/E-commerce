@@ -1,20 +1,21 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
 import SaidBar from "./SaidBar";
-import { AllContext } from "../App";
+import { AXIOS, AllContext } from "../App";
 import "../App.css";
 import Chart from "react-apexcharts";
 import "apexcharts";
 import "apexcharts/dist/apexcharts.css";
 import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
+import { all } from "axios";
 
 function AdminHome() {
-  const { userData, product, sale, itemsincart } = useContext(AllContext);
-  const users = userData.length;
-  const Products = product.length;
-  const Sale = sale.length;
+  const [users,setUsers] =useState(0)
+  const [Products,setProduct]=useState(0) 
+  const [Sale,setSale] = useState(0)
+  const[delivery,setDelivery]=useState(5)
   const Navigate = useNavigate();
-
   const [state, setState] = useState({
     options: {
       colors: ["#E91E63", "#FF9800"],
@@ -32,6 +33,42 @@ function AdminHome() {
       },
     ],
   });
+
+  useEffect(()=>{
+const allProduct= async()=>{
+try {
+  const response=await AXIOS.get('admin/products')
+  if(response.status===200){
+    setProduct(response.data.data.length)
+  }
+} catch (error) {
+  toast.error("Error")
+}
+}
+const allUsers=async()=>{
+try {
+  const response=await AXIOS.get('admin/users')
+  if(response.status===200){
+    setUsers(response.data.data.length)
+  }
+} catch (error) {
+  toast.error("Error")
+}  
+}
+const allSale=async()=>{
+  try {
+    const rseponse=await AXIOS.get('admin/order')
+    if(rseponse.status===200){
+      setSale(rseponse.data.product.length)
+    }
+  } catch (error) {
+    toast.error('Error')
+  }
+}
+allSale()
+allProduct()
+allUsers()
+  },[])
 
   return (
     <div className="d-flex ">
@@ -80,7 +117,7 @@ function AdminHome() {
               }}>
               <div className="p-5 bg-white shadow d-flex justify-content-around align-items-center rounded">
                 <div>
-                  <h3 className="fs-2">{itemsincart}</h3>
+                  <h3 className="fs-2">{delivery}</h3>
                   <p className="fs-5">Delivery</p>
                 </div>
                 <i className="bi bi-truck p-3 fs-1"></i>

@@ -17,12 +17,11 @@ cloudinary.config({
 });
 const uploadImage = (req, res, next) => {
   upload.single("image")(req, res, async (err) => {
-      if (err) { 
+    if (err) { 
           return res.status(400).json({ message: err.message });
         }
         try {
-        console.log(req.file);
-      const result = await cloudinary.uploader.upload(req.file.path, {
+        const result = await cloudinary.uploader.upload(req.file.path,{
         folder: "Product-IMG",
       });
       req.body.image = result.secure_url;

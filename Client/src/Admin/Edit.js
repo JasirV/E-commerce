@@ -19,7 +19,6 @@ function Edit() {
   const handleImageChange = (img) => {
     const selectedImage = img.target.files[0];
     setImage(selectedImage);
-    console.log(selectedImage);
   };
   const handleChangeCategory = (e) => {
     setCategory(e.target.value);
@@ -40,11 +39,16 @@ function Edit() {
     formData.append("stock", stock);
 
     try {
-      const response = await AXIOS.post("/admin/products", formData);
-      console.log(response);
+      const jwtToken={
+        headers:{
+          'Content-Type':'multipath/form-data',
+          Authorizaton:localStorage.getItem('admin_Token')
+        }
+      }
+      const response = await AXIOS.post("/admin/products", formData,jwtToken);
       if (response.status === 201) {
         toast.success("Product added successfully!");
-        navigate("/adminproduct");
+        navigate("/addminprodut");
       } else {
         toast.error("Failed to add product.");
       }
