@@ -1,6 +1,6 @@
 node_modules/
 configs/
-/package-lock.json
-/package.json
-/.env
-upload/
+package-lock.json
+package.json
+.env
+uploads/
