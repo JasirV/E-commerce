@@ -11,7 +11,6 @@ import {
   MDBTypography,
 } from "mdb-react-ui-kit";
 import {toast} from "react-toastify"
-import axios from "axios";
 import { AXIOS } from "../App";
 
 const AdminOders = () => {
@@ -22,9 +21,9 @@ const AdminOders = () => {
     const fetchOrders=async()=>{
       try{
         const response=await AXIOS.get('/admin/order')
-        console.log(response.data.product);
+        console.log(response.data.user);
         if(response.status===200){
-          setOrder(response.data.product)
+          setOrder(response.data.user)
         } 
       }catch(error){
         console.log("Error Fetching The Products",error);
@@ -64,9 +63,10 @@ const AdminOders = () => {
                   </div>
                 </div>
 
-                {order.map((item, index) => (
-                  <MDBCard key={item._id || index} className="rounded-3 mb-4">
-                    <MDBCardBody className="p-4">
+                {order.map((ite, index) => (
+                  <MDBCard key={ite._id || index} className="rounded-3 mb-4">
+                    {ite.products.map((item,inde)=>(
+                    <MDBCardBody key={inde} className="p-4">
                       <MDBRow className="justify-content-between align-items-center">
                         <MDBCol md="12" lg="6" xl="4">
                           <MDBCardImage
@@ -82,15 +82,15 @@ const AdminOders = () => {
                           </p>
                           <p>
                             <span className="text-muted">
-                              Animal:{item.Animal}{" "}
+                              Animal:{item.category}{" "}
                             </span>
                             <br />
                             <span className="text-muted">
-                              Stock:{item.Stock}{" "}
+                              Stock:{item.stock}{" "}
                             </span>
                           </p>
                         </MDBCol>
-                        <MDBCol
+                        {/* <MDBCol
                           md="12"
                           lg="6"
                           xl="4"
@@ -98,10 +98,10 @@ const AdminOders = () => {
                           <span className="border border-secondary p-3 mt-2">
                             {item.Qty}
                           </span>
-                        </MDBCol>
+                        </MDBCol> */}
                         <MDBCol md="12" lg="6" xl="4">
                           <MDBTypography tag="h5" className="mb-0">
-                            ₹{item.total_amount}
+                            ₹{item.price}
                           </MDBTypography>
                         </MDBCol>
 
@@ -110,7 +110,9 @@ const AdminOders = () => {
                         </MDBCol>
                       </MDBRow>
                     </MDBCardBody>
+                    ))}
                   </MDBCard>
+                  
                 ))}
               </MDBCol>
             </MDBRow>

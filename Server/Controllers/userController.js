@@ -353,11 +353,10 @@ const deleteWishList = async (req, res) => {
 let sValue = {};
 
 const PaymetSection = async (req, res) => {
-  const userId = req.params.id;
+  const userid = req.params.id;
   const user = await userSchema
-    .findOne({ _id: userId })
+    .findOne({ _id: userid })
     .populate("cart.productId")
-console.log(user);
   if (!user) {
     return res.status(404).json({
       status: "fail",
@@ -374,7 +373,6 @@ console.log(user);
     });
   }
   const items = cartProduct.map((i) => {
-    console.log(i.productId.title);
     return {
       price_data: {
         currency: "inr",
@@ -401,7 +399,7 @@ console.log(user);
     });
   }
   sValue = {
-    userId,
+    userid,
     user,
     session,
   };
@@ -413,17 +411,17 @@ console.log(user);
 };
 
 const succesPayment = async (req, res) => {
-  const { id, user, session } = sValue;
-  const userId = user.id;
+  const { userid, user, session } = sValue;
+  const userId = userid
   const cartItem = user.cart;
+  console.log(cartItem,"hai");
   const order = await Order.create({
-    userId: id,
-    products: cartItem.map((value) => value._id),
+    userId: userid,
+    products: cartItem.map((value) => value.productId),
     order_id: session.id,
     payment_id: `demo ${Date.now()}`,
     total_amount: session.amount_total / 100,
   });
-  console.log(order.products);
   if (!order) {
     return res.json({
       message: "errror",

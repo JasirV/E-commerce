@@ -209,6 +209,9 @@ const totalRevenue = async (req, res) => {
 
 const order = async (req, res) => {
   const product = await Order.find();
+  // console.log(product);
+  const user=await Order.find().populate({path:'products',model:'product'});
+  console.log(user,"user");
   if (!product) {
     return res.status(200).json({
       message: "No Products",
@@ -217,7 +220,8 @@ const order = async (req, res) => {
   res.status(200).json({
     status: "success",
     message: "Successfuly fetch Orders ",
-    product,
+    user
+    
   });
 };
 
