@@ -417,11 +417,12 @@ const succesPayment = async (req, res) => {
   console.log(cartItem,"hai");
   const order = await Order.create({
     userId: userid,
-    products: cartItem.map((value) => value.productId),
+    products: cartItem.map((value) => {value.productId,value.quantity}),
     order_id: session.id,
     payment_id: `demo ${Date.now()}`,
     total_amount: session.amount_total / 100,
   });
+  console.log(order);
   if (!order) {
     return res.json({
       message: "errror",

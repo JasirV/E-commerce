@@ -21,7 +21,7 @@ const AdminOders = () => {
     const fetchOrders=async()=>{
       try{
         const response=await AXIOS.get('/admin/order')
-        console.log(response.data.user);
+        console.log(response);
         if(response.status===200){
           setOrder(response.data.user)
         } 
