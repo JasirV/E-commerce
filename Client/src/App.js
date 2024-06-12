@@ -64,6 +64,7 @@ const [cart, setCart] = useState([]);
 const [search, setSearch] = useState("");
 const [buy,setBuy]=useState([])
 
+console.log(process.env.REACT_APP_API_URL,'env');
   return (
     <div className="App">
       <AllContext.Provider
