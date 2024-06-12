@@ -29,7 +29,7 @@ import PaymentCancel from "./Componets/PaymentCanel";
 
 
 export const Axios=axios.create({
-  baseURL: 'http://localhost:3001/',
+  baseURL: 'https://e-commerce-ds4q.onrender.com/',
   headers:{
     "Content-Type":'application/json',
     Authorization:localStorage.getItem('user_Token'),
@@ -37,7 +37,7 @@ export const Axios=axios.create({
 });
 
 export const AXIOS=axios.create({
-  baseURL:'http://localhost:3001/',
+  baseURL:'https://e-commerce-ds4q.onrender.com/',
   headers:{
     "Content-Type": "application/json",
     Authorization:localStorage.getItem("admin_Token")
