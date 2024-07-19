@@ -53,7 +53,7 @@ const Signup = () => {
       };
     
       const response = await axios.post(
-        "http://localhost:3001/users/register",
+        "https://e-commerce-ds4q.onrender.com/users/register",
         data,
         {
           headers: {

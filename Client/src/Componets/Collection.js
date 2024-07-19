@@ -4,18 +4,22 @@ import { Button, Card } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { toast } from "react-toastify";
+import Loading from "./Loading";
 const userId=localStorage.getItem('userId')
 const Collection = () => {
   const Navigate=useNavigate()
   const {search,setSearch}=useContext(AllContext);
   const [products,setProduct]=useState([]);
+  const [loading,setLoading]=useState(true)
   useEffect(() => {
     const allProducts = async () => {
       try {
         const response = await axios.get(
-          'http://localhost:3001/users/products'
+          'https://e-commerce-ds4q.onrender.com/users/products'
         );
+        console.log(response);
         setProduct(response.data.product);
+        setLoading(false)
       } catch (error) {
         console.log(error);
         toast.error(error.message || "Failed to fetch Products");
@@ -23,6 +27,12 @@ const Collection = () => {
     };
   
     allProducts();
+    const intervalId = setInterval(() => {
+      allProducts();
+      console.log('API called');
+    }, 14 * 60 * 1000);
+
+    return () => clearInterval(intervalId);
   }, []);
   const Search = products.filter((item) => {
     if (search === "") {
@@ -75,6 +85,8 @@ const Collection = () => {
 
 
   return (
+    <>
+    {loading?<Loading />:(
     <div>
       <div></div>
       <div>
@@ -153,6 +165,8 @@ const Collection = () => {
         </div>
       </div>
     </div>
+    )}
+    </>
   );
 };
 

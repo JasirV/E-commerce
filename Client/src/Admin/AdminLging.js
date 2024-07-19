@@ -27,7 +27,7 @@ function AdminLging() {
       username:username,
       password:password
     };
-    const response=await  axios.post("http://localhost:3001/admin/login",data)
+    const response=await  axios.post("https://e-commerce-ds4q.onrender.com/admin/login",data)
     localStorage.setItem("admin_Token",response.data.token)
     toast.success('Admin Login Success')
     Navigation('/addminhome')

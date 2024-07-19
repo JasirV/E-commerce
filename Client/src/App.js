@@ -36,6 +36,7 @@ export const Axios=axios.create({
   },
 });
 
+
 export const AXIOS=axios.create({
   baseURL:'https://e-commerce-ds4q.onrender.com/',
   headers:{

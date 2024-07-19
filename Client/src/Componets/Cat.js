@@ -17,7 +17,7 @@ const Cat = () => {
   useEffect(()=>{
     const catProducts=async ()=>{
       try {
-        const response=await axios.get(`http://localhost:3001/users/products/category/${category}`)
+        const response=await axios.get(`https://e-commerce-ds4q.onrender.com/users/products/category/${category}`)
         setProduct(response.data.product)
         console.log(response.data.product);
       } catch (error) {

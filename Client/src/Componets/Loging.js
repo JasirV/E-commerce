@@ -24,7 +24,7 @@ const Loging = () => {
         password:password
       };
       const response= await axios.post(
-        "http://localhost:3001/users/login",
+        "https://e-commerce-ds4q.onrender.com/users/login",
         data
       );
       console.log(response);
